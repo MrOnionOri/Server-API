@@ -1,6 +1,7 @@
 #include "ServerCore.h"
 #include "Socket.h"
 #include <iostream>
+#include <thread>
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -9,7 +10,16 @@ Server::Server(int port) : m_port(port), m_running(false) {};
 
 void Server::stop() {
     m_running = false;
-    WSACleanup();
+}
+
+void Server::clientHandler(int clientSocket) {
+    Socket client(clientSocket);
+    while (true) {
+        auto data = client.receiveData();
+        if (data.empty()) break;
+        std::cout << "Recibido: " << data << std::endl;
+        client.sendData("ACK\r\n");
+    }
 }
 
 void Server::start() {
@@ -28,19 +38,15 @@ void Server::start() {
 
     std::cout << "Servidor escuchando en " << m_port << std::endl;
 
-    while (true) {
+    m_running = true;
+
+    while (m_running) {
         SOCKET clientSock = accept(serverSocket, nullptr, nullptr);
+        if (clientSock == INVALID_SOCKET) continue;
         std::cout << "Cliente conectado\n";
 
-        Socket client(clientSock);
-
-        while (m_running) {
-            auto data = client.receiveData();
-            if (data.empty()) break;
-
-            std::cout << "Recibido: " << data << std::endl;
-            client.sendData("ACK\r\n");
-        }
+		std::thread(&Server::clientHandler, this, clientSock).detach();
     }
     closesocket(serverSocket);
+    WSACleanup();
 }
