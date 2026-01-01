@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\api">
-      <UniqueIdentifier>{9d5a3ad3-fd6f-4c88-b4b4-bf8626a8f9c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\core">
       <UniqueIdentifier>{8a036d50-f849-4004-aa1d-b79649da079b}</UniqueIdentifier>
     </Filter>
@@ -24,9 +21,6 @@
     </Filter>
     <Filter Include="Header Files\http">
       <UniqueIdentifier>{73accb25-5bef-4cae-9af1-2e1439224a32}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\api">
-      <UniqueIdentifier>{d09ebba6-81c5-4bcd-8963-e9fb4796289b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\core">
       <UniqueIdentifier>{220709a9-1ead-4be6-9d9b-73ceb311d843}</UniqueIdentifier>
@@ -41,15 +35,6 @@
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ApiServer.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="Request.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="Response.cpp">
-      <Filter>Source Files\api</Filter>
     </ClCompile>
     <ClCompile Include="ServerCore.cpp">
       <Filter>Source Files\core</Filter>
@@ -72,17 +57,17 @@
     <ClCompile Include="HttpResponse.cpp">
       <Filter>Source Files\http</Filter>
     </ClCompile>
+    <ClCompile Include="HttpParser.cpp">
+      <Filter>Source Files\http</Filter>
+    </ClCompile>
+    <ClCompile Include="Router.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpServer.cpp">
+      <Filter>Source Files\http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiServer.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="Request.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="Response.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
     <ClInclude Include="ServerCore.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -102,6 +87,15 @@
       <Filter>Header Files\http</Filter>
     </ClInclude>
     <ClInclude Include="HttpResponse.h">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpParser.h">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="Router.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpServer.h">
       <Filter>Header Files\http</Filter>
     </ClInclude>
   </ItemGroup>

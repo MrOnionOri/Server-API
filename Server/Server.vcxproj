@@ -127,12 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApiServer.cpp" />
     <ClCompile Include="ClientHandler.cpp" />
+    <ClCompile Include="HttpParser.cpp" />
     <ClCompile Include="HttpRequest.cpp" />
     <ClCompile Include="HttpResponse.cpp" />
-    <ClCompile Include="Request.cpp" />
-    <ClCompile Include="Response.cpp" />
+    <ClCompile Include="HttpServer.cpp" />
+    <ClCompile Include="Router.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerCore.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -140,12 +140,12 @@
     <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiServer.h" />
     <ClInclude Include="ClientHandler.h" />
+    <ClInclude Include="HttpParser.h" />
     <ClInclude Include="HttpRequest.h" />
     <ClInclude Include="HttpResponse.h" />
-    <ClInclude Include="Request.h" />
-    <ClInclude Include="Response.h" />
+    <ClInclude Include="HttpServer.h" />
+    <ClInclude Include="Router.h" />
     <ClInclude Include="ServerCore.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="TcpListener.h" />

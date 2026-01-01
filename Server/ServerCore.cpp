@@ -1,11 +1,15 @@
 #include "ServerCore.h"
 #include "Socket.h"
+#include "ThreadPool.h"
+#include "HttpParser.h"
 #include <iostream>
 #include <thread>
 
 #pragma comment(lib, "Ws2_32.lib")
 
-Server::Server(int port) : m_port(port), m_running(false) {};
+Server::Server(int port, Router* router)
+    : m_port(port), m_running(false), router(router) {
+}
 
 
 void Server::stop() {
@@ -14,39 +18,83 @@ void Server::stop() {
 
 void Server::clientHandler(int clientSocket) {
     Socket client(clientSocket);
-    while (true) {
-        auto data = client.receiveData();
-        if (data.empty()) break;
-        std::cout << "Recibido: " << data << std::endl;
-        client.sendData("ACK\r\n");
-    }
+
+    auto raw = client.receiveData();
+    if (raw.empty()) return;
+
+    HttpRequest request = parseHttpRequest(raw);
+
+    HttpResponse response = router->route(request);
+
+    client.sendData(response.toString());
 }
 
 void Server::start() {
     WSADATA wsa;
-    WSAStartup(MAKEWORD(2, 2), &wsa);
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+        std::cerr << "WSAStartup failed\n";
+        return;
+    }
 
     SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (serverSocket == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed\n";
+        WSACleanup();
+        return;
+    }
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(m_port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    bind(serverSocket, (sockaddr*)&addr, sizeof(addr));
-    listen(serverSocket, SOMAXCONN);
+    if (bind(serverSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+        std::cerr << "Bind failed\n";
+        closesocket(serverSocket);
+        WSACleanup();
+        return;
+    }
+
+    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+        std::cerr << "Listen failed\n";
+        closesocket(serverSocket);
+        WSACleanup();
+        return;
+    }
 
     std::cout << "Servidor escuchando en " << m_port << std::endl;
 
     m_running = true;
 
+    ThreadPool pool(this, 5, 30);
+
+    std::thread monitor([this, &pool]() {
+        while (m_running) {
+            auto stats = pool.getSnapshot();
+
+            std::cout
+                << "[POOL] Total: " << stats.totalThreads
+                << " | Busy: " << stats.busyThreads
+                << " | Idle: " << stats.idleThreads
+                << " | Queue: " << stats.queuedTasks
+                << std::endl;
+
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+        });
+    monitor.detach();
+
     while (m_running) {
         SOCKET clientSock = accept(serverSocket, nullptr, nullptr);
-        if (clientSock == INVALID_SOCKET) continue;
-        std::cout << "Cliente conectado\n";
+        if (clientSock == INVALID_SOCKET) {
+            if (!m_running) break;
+            continue;
+        }
 
-		std::thread(&Server::clientHandler, this, clientSock).detach();
+        pool.enqueue(clientSock);
     }
+
+    pool.stop();
     closesocket(serverSocket);
     WSACleanup();
 }
