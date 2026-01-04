@@ -5,14 +5,14 @@ struct HttpResponse {
 	int status = 200;
 	std::string statusText = "OK";
 	std::string body;
+	std::string contentType = "text/plain";
+	std::string header;
+	
+	std::string toString() const;
 
-	std::string toString() const {
-		std::string response;
-		response += "HTTP/1.1 " + std::to_string(status) + " " + statusText + "\r\n";
-		response += "Content-Length: " + std::to_string(body.size()) + "\r\n";
-		response += "Connection: close\r\n";
-		response += "\r\n";
-		response += body;
-		return response;
-	}
+	// Helpers (factory methods)
+	static HttpResponse text(const std::string& text);
+	static HttpResponse json(const std::string& json);
+	static HttpResponse notFound();
+	static HttpResponse internalError();
 };

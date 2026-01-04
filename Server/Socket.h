@@ -9,6 +9,7 @@ public:
 
     int sendData(const std::string& data);
     std::string receiveData();
+	std::string getRemoteIp() const;
     void close();
 
 private:

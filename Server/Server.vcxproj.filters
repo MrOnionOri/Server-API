@@ -31,6 +31,12 @@
     <Filter Include="Source Files\http">
       <UniqueIdentifier>{9016f05d-ab65-4850-a0c6-d4a0acc11435}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\settings">
+      <UniqueIdentifier>{5873b8cb-adb7-4bfd-810e-ffc31fb0b946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\settings">
+      <UniqueIdentifier>{da50067b-231a-4725-a174-882be8b65389}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -66,6 +72,9 @@
     <ClCompile Include="HttpServer.cpp">
       <Filter>Source Files\http</Filter>
     </ClCompile>
+    <ClCompile Include="ConsoleHandler.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerCore.h">
@@ -97,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="HttpServer.h">
       <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleHandler.h">
+      <Filter>Header Files\settings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

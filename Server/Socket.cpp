@@ -1,4 +1,6 @@
 #include "Socket.h"
+#include <ws2tcpip.h>
+
 
 Socket::Socket(SOCKET s) : m_socket(s){}
 
@@ -23,4 +25,16 @@ void Socket::close() {
 		closesocket(m_socket);
 		m_socket = INVALID_SOCKET;
 	}
+}
+
+std::string Socket::getRemoteIp() const {
+	sockaddr_in addr{};
+	int len = sizeof(addr);
+	char ipStr[INET_ADDRSTRLEN];
+
+	if (getpeername(m_socket, reinterpret_cast<sockaddr*>(&addr), &len) == 0) {
+		InetNtopA(AF_INET, &addr.sin_addr, ipStr, INET_ADDRSTRLEN);
+		return std::string(ipStr);
+	}
+	return "";
 }

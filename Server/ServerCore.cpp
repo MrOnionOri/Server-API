@@ -2,6 +2,7 @@
 #include "Socket.h"
 #include "ThreadPool.h"
 #include "HttpParser.h"
+#include "ConsoleHandler.h"
 #include <iostream>
 #include <thread>
 
@@ -30,6 +31,8 @@ void Server::clientHandler(int clientSocket) {
 }
 
 void Server::start() {
+    RegisterConsoleHandler(this);
+
     WSADATA wsa;
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         std::cerr << "WSAStartup failed\n";
