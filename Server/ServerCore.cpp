@@ -7,6 +7,7 @@
 #include <thread>
 
 #pragma comment(lib, "Ws2_32.lib")
+ThreadPool pool;
 
 Server::Server(int port, Router* router)
     : m_port(port), m_running(false), router(router) {
@@ -15,6 +16,12 @@ Server::Server(int port, Router* router)
 
 void Server::stop() {
     m_running = false;
+    pool.stop();
+    if (m_serverSocket != INVALID_SOCKET) {
+        closesocket(m_serverSocket);
+        m_serverSocket = INVALID_SOCKET;
+    }
+    std::cout << "Servidor detenido señal enviada." << std::endl;
 }
 
 void Server::clientHandler(int clientSocket) {
@@ -24,6 +31,8 @@ void Server::clientHandler(int clientSocket) {
     if (raw.empty()) return;
 
     HttpRequest request = parseHttpRequest(raw);
+    request.ipAddress = client.getRemoteIp();
+	std::cout << "[REQUEST] IP: " << request.ipAddress << " " << request.method << " " << request.path << std::endl;
 
     HttpResponse response = router->route(request);
 
@@ -39,8 +48,8 @@ void Server::start() {
         return;
     }
 
-    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (serverSocket == INVALID_SOCKET) {
+    m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_serverSocket == INVALID_SOCKET) {
         std::cerr << "Socket creation failed\n";
         WSACleanup();
         return;
@@ -51,16 +60,16 @@ void Server::start() {
     addr.sin_port = htons(m_port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(serverSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+    if (bind(m_serverSocket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
         std::cerr << "Bind failed\n";
-        closesocket(serverSocket);
+        closesocket(m_serverSocket);
         WSACleanup();
         return;
     }
 
-    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+    if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR) {
         std::cerr << "Listen failed\n";
-        closesocket(serverSocket);
+        closesocket(m_serverSocket);
         WSACleanup();
         return;
     }
@@ -69,9 +78,9 @@ void Server::start() {
 
     m_running = true;
 
-    ThreadPool pool(this, 5, 30);
+	pool.initialize(this, 5, 30);
 
-    std::thread monitor([this, &pool]() {
+    /*std::thread monitor([this, &pool]() {
         while (m_running) {
             auto stats = pool.getSnapshot();
 
@@ -85,12 +94,17 @@ void Server::start() {
             std::this_thread::sleep_for(std::chrono::seconds(2));
         }
         });
-    monitor.detach();
+    monitor.detach();*/
 
     while (m_running) {
-        SOCKET clientSock = accept(serverSocket, nullptr, nullptr);
+        SOCKET clientSock = accept(m_serverSocket, nullptr, nullptr);
+
         if (clientSock == INVALID_SOCKET) {
-            if (!m_running) break;
+
+            if (!m_running) {
+                std::cout << "Server shutdown detected inside loop.\n";
+                break;
+            }
             continue;
         }
 
@@ -98,6 +112,6 @@ void Server::start() {
     }
 
     pool.stop();
-    closesocket(serverSocket);
+    closesocket(m_serverSocket);
     WSACleanup();
 }

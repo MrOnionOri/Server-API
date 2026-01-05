@@ -22,6 +22,30 @@ ThreadPool::ThreadPool(Server* server, size_t minThreads, size_t maxThreads)
     }
 }
 
+// Default constructor for cases where initialization is deferred
+ThreadPool::ThreadPool()
+    : running(false),
+    minThreads(0),
+    maxThreads(0),
+    server(nullptr)
+{
+}
+
+void ThreadPool::initialize(Server* server, size_t minThreads, size_t maxThreads) {
+    this->server = server;
+    this->minThreads = minThreads;
+    this->maxThreads = maxThreads;
+    this->running = true;
+    workerStats.resize(minThreads);
+    for (size_t i = 0; i < minThreads; ++i) {
+        workerStats[i].state = WorkerState::Idle;
+        workerStats[i].lastChange = std::chrono::steady_clock::now();
+        workers.emplace_back(&ThreadPool::workerLoop, this, i);
+    }
+}
+
+//End of aditional configuration in case is only declared and not initialized
+
 ThreadPool::~ThreadPool() {
     stop();
 }

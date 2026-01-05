@@ -1,12 +1,18 @@
 #pragma once
 #include "Router.h"
+#include "ThreadPool.h"
+#include "Socket.h"
+#include <atomic>
+
 
 class Server {
 private:
 	int m_port;
-	bool m_running;
+	std::atomic<bool> m_running;
+	SOCKET m_serverSocket;
 	Router* router;
 	static Server* instance;
+
 public:
 	Server(int port);
 	Server(int port, Router* router);

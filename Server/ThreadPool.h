@@ -31,6 +31,10 @@ struct ThreadPoolSnapshot {
 class ThreadPool {
 public:
     ThreadPool(Server* server, size_t minThreads, size_t maxThreads);
+
+    ThreadPool();
+	void initialize(Server* server, size_t minThreads, size_t maxThreads);
+
     ~ThreadPool();
 
     void enqueue(int clientSocket);
