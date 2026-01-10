@@ -3,6 +3,7 @@
 #include <ws2tcpip.h>
 #include "HttpServer.h"
 #include "HttpRequest.h"
+#include "test.cpp"
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -13,10 +14,6 @@ int main() {
 		response.body = "Hola Mundo";
 		return response;
     });
-    server.get("/adio", [](const HttpRequest&) {
-        HttpResponse response;
-        response.body = "<html><body><h1>ADIOS MUNDO</h1></body></html>";
-        return response;
-    });
+    server.get("/adio", testPlace);
     server.start();
 }

@@ -133,11 +133,13 @@
     <ClCompile Include="HttpRequest.cpp" />
     <ClCompile Include="HttpResponse.cpp" />
     <ClCompile Include="HttpServer.cpp" />
+    <ClCompile Include="Json.cpp" />
     <ClCompile Include="Router.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerCore.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="TcpListener.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,7 @@
     <ClInclude Include="HttpRequest.h" />
     <ClInclude Include="HttpResponse.h" />
     <ClInclude Include="HttpServer.h" />
+    <ClInclude Include="Json.h" />
     <ClInclude Include="Router.h" />
     <ClInclude Include="ServerCore.h" />
     <ClInclude Include="Socket.h" />

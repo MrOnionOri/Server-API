@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Json.h"
 
 struct HttpResponse {
 	int status = 200;
@@ -15,4 +16,6 @@ struct HttpResponse {
 	static HttpResponse json(const std::string& json);
 	static HttpResponse notFound();
 	static HttpResponse internalError();
+
+	static std::string toStr();
 };

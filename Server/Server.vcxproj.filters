@@ -37,6 +37,15 @@
     <Filter Include="Header Files\settings">
       <UniqueIdentifier>{da50067b-231a-4725-a174-882be8b65389}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\tools">
+      <UniqueIdentifier>{32cf549b-1dc2-416a-8f1c-5bc8059fbd7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tools">
+      <UniqueIdentifier>{72f25772-b12c-46dd-bae5-4b274f1dca75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\test">
+      <UniqueIdentifier>{bc7680ce-8392-4f33-afba-17b455e86f70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -75,6 +84,12 @@
     <ClCompile Include="ConsoleHandler.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
+    <ClCompile Include="Json.cpp">
+      <Filter>Source Files\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerCore.h">
@@ -109,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="ConsoleHandler.h">
       <Filter>Header Files\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Json.h">
+      <Filter>Header Files\tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
