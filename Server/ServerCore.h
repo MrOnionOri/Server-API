@@ -12,12 +12,13 @@ private:
 	SOCKET m_serverSocket;
 	Router* router;
 	static Server* instance;
+	ThreadPool pool;
 
 public:
-	Server(int port);
 	Server(int port, Router* router);
 	void start();
 	void stop();
-	void clientHandler(int clientSocket);
+	void clientHandler(SOCKET clientSocket);
 
+	ThreadPoolSnapshot getPoolSnapshot() const;
 };

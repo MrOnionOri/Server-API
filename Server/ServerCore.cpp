@@ -10,8 +10,7 @@
 ThreadPool pool;
 
 Server::Server(int port, Router* router)
-    : m_port(port), m_running(false), router(router) {
-}
+    : m_port(port), m_running(false), router(router), pool(this, 5, 30) {}
 
 
 void Server::stop() {
@@ -24,7 +23,7 @@ void Server::stop() {
     std::cout << "Servidor detenido señal enviada." << std::endl;
 }
 
-void Server::clientHandler(int clientSocket) {
+void Server::clientHandler(SOCKET clientSocket) {
     Socket client(clientSocket);
 
     auto raw = client.receiveData();
@@ -78,7 +77,7 @@ void Server::start() {
 
     m_running = true;
 
-	pool.initialize(this, 5, 30);
+	//pool.initialize(this, 5, 30);
 
     /*std::thread monitor([this, &pool]() {
         while (m_running) {
@@ -114,4 +113,8 @@ void Server::start() {
     pool.stop();
     closesocket(m_serverSocket);
     WSACleanup();
+}
+
+ThreadPoolSnapshot Server::getPoolSnapshot() const {
+    return pool.getSnapshot();
 }

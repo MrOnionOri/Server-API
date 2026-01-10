@@ -15,5 +15,16 @@ int main() {
 		return response;
     });
     server.get("/adio", testPlace);
+    server.get("/stats", [&server](const HttpRequest&) { //implementar unas rutas por default 
+        auto s = server.getStats();
+
+        Json json;
+        json.add("totalThreads", s.totalThreads)
+            .add("busyThreads", s.busyThreads)
+            .add("idleThreads", s.idleThreads)
+            .add("queuedTasks", s.queuedTasks);
+
+        return HttpResponse::json(json.str());
+    });
     server.start();
 }

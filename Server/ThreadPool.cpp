@@ -50,7 +50,7 @@ ThreadPool::~ThreadPool() {
     stop();
 }
 
-void ThreadPool::enqueue(int clientSocket) {
+void ThreadPool::enqueue(SOCKET clientSocket) {
     {
         std::unique_lock<std::mutex> lock(queueMutex);
         tasks.push(clientSocket);
@@ -113,17 +113,26 @@ void ThreadPool::setWorkerState(size_t index, WorkerState newState) {
     stats.lastChange = now;
 }
 
-ThreadPoolSnapshot ThreadPool::getSnapshot() {
-    std::lock_guard<std::mutex> lock(statsMutex);
+ThreadPoolSnapshot ThreadPool::getSnapshot() const {
+	ThreadPoolSnapshot snapshot;
 
-    ThreadPoolSnapshot snap;
-    snap.totalThreads = workers.size();
-    snap.queuedTasks = tasks.size();
+    snapshot.totalThreads = workers.size();
 
-    for (auto& w : workerStats) {
-        if (w.state == WorkerState::Busy) snap.busyThreads++;
-        if (w.state == WorkerState::Idle) snap.idleThreads++;
+    {
+		std::lock_guard<std::mutex> lock(statsMutex);
+        for (const auto& ws: workerStats) {
+            if(ws.state == WorkerState::Busy) {
+                snapshot.busyThreads++;
+            } else if (ws.state == WorkerState::Idle) {
+                snapshot.idleThreads++;
+			}
+        }
+
+        {
+			std::lock_guard<std::mutex> lock(queueMutex);
+			snapshot.queuedTasks = tasks.size();
+        }
     }
 
-    return snap;
+    return snapshot;
 }

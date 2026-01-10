@@ -11,6 +11,8 @@ public:
 
     void start();
 
+    ThreadPoolSnapshot getStats() const;
+
 private:
     int port;        // Puerto del servidor
     Router router;   // Router HTTP (vive toda la vida del server)

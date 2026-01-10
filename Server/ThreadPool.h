@@ -5,6 +5,8 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
+#include "Socket.h"
 
 class Server;
 
@@ -15,8 +17,8 @@ enum class WorkerState {
 };
 
 struct WorkerStats {
-    WorkerState state;
-    std::chrono::steady_clock::time_point lastChange;
+    WorkerState state = WorkerState::Idle;
+    std::chrono::steady_clock::time_point lastChange{ std::chrono::steady_clock::now() };
     std::chrono::milliseconds totalBusy{ 0 };
     std::chrono::milliseconds totalIdle{ 0 };
 };
@@ -37,10 +39,11 @@ public:
 
     ~ThreadPool();
 
-    void enqueue(int clientSocket);
+    //void enqueue(int clientSocket);
+	void enqueue(SOCKET clientSocket);
     void stop();
 
-    ThreadPoolSnapshot getSnapshot();
+    ThreadPoolSnapshot getSnapshot() const;
 
 private:
     void workerLoop(size_t index);
@@ -49,15 +52,16 @@ private:
     std::vector<std::thread> workers;
     std::queue<int> tasks;
 
-    std::mutex queueMutex;
+    mutable std::mutex queueMutex;
     std::condition_variable condition;
 
-    bool running;
+    //bool running;
+    std::atomic<bool> running{ false };
     size_t minThreads;
     size_t maxThreads;
 
     std::vector<WorkerStats> workerStats;
-    std::mutex statsMutex;
+    mutable std::mutex statsMutex;
 
     Server* server;
 };

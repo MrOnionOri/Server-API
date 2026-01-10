@@ -11,6 +11,7 @@ public:
 	Json& add(const std::string& key, int value);
 	Json& add(const std::string& key, bool value);
 	Json& add(const std::string& key, double value);
+	Json& add(const std::string& key, size_t value);
 
 	Json& addArray(const std::string& key, const std::vector<int>& value);
 	Json& addArray(const std::string&, const std::vector<std::string>& value);

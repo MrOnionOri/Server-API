@@ -83,6 +83,10 @@ Json& Json::addObject(const std::string& key, const Json& value) {
 	return *this;
 }
 
+Json& Json::add(const std::string& key, size_t value) {
+	return add(key, static_cast<int>(value));
+}
+
 std::string Json::str() const {
 	return ss.str() + "}";
 }
